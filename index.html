@@ -77,9 +77,10 @@
             <input type="text" id="user-input" placeholder="Type a message...">
             <button id="send-button">Send</button>
         </div>
-        <button id="add-question-button">Add New Question</button>
-        <button id="view-questions-button">View Available Questions</button>
     </div>
+    <button id="add-question-button">Add New Question</button>
+    <button id="view-questions-button">View Available Questions</button>
+
     <script>
         const messages = document.getElementById('messages');
         const userInput = document.getElementById('user-input');
@@ -89,6 +90,7 @@
 
         const defaultBotResponses = {
             'hello': 'Hello there! How can I assist you today?',
+			'hi': 'Who are you',
             'how are you?': 'I am just a bot, but I am doing great! How about you?',
             'bye': 'Goodbye! Have a great day!',
             'what is your name?': 'I am your friendly AI companion!',
@@ -111,7 +113,54 @@
             localStorage.setItem('botResponses', JSON.stringify(botResponses));
         }
 
-        function addMessage(content, sender) {
-            const messageElement = document
-      
+        function addMessage(content, className) {
+            const messageElement = document.createElement('li');
+            messageElement.textContent = content;
+            messageElement.className = className;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function handleUserInput() {
+            const userText = userInput.value.toLowerCase();
+            addMessage(userInput.value, 'user');
+            userInput.value = '';
+
+            const botResponses = getBotResponses();
+            const botReply = botResponses[userText] || "Sorry, I didn't understand that. Try asking something else!";
+            setTimeout(() => addMessage(botReply, 'bot'), 500);
+        }
+
+        function addNewQuestion() {
+            const question = prompt('Enter the new question:');
+            const answer = prompt('Enter the answer:');
+
+            if (question && answer) {
+                const botResponses = getBotResponses();
+                botResponses[question.toLowerCase()] = answer;
+                setBotResponses(botResponses);
+                alert('New question added successfully!');
+            } else {
+                alert('Question and answer cannot be empty.');
+            }
+        }
+
+        function viewAvailableQuestions() {
+            const botResponses = getBotResponses();
+            alert('Available Questions:\n' + Object.keys(botResponses).join('\n'));
+        }
+
+        sendButton.addEventListener('click', handleUserInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleUserInput();
+            }
+        });
+
+        addQuestionButton.addEventListener('click', addNewQuestion);
+        viewQuestionsButton.addEventListener('click', viewAvailableQuestions);
+    </script>
+</body>
+</html>
+
       
