@@ -108,6 +108,12 @@
         }
 
         function setBotResponses(botResponses) {
-            localStorage.setItem('
+            localStorage.setItem('botResponses', JSON.stringify(botResponses));
+        }
+
+        function addMessage(content, sender) {
+            const messageElement = document.createElement('li');
+            messageElement.textContent =
+    
         
 
