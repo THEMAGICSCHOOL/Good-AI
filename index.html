@@ -86,7 +86,6 @@
         const sendButton = document.getElementById('send-button');
         const addQuestionButton = document.getElementById('add-question-button');
         const viewQuestionsButton = document.getElementById('view-questions-button');
-
         const defaultBotResponses = {
             'hello': 'Hello there! How can I assist you today?',
             'how are you?': 'I am just a bot, but I am doing great! How about you?',
@@ -100,43 +99,54 @@
             'what is ai?': 'AI stands for Artificial Intelligence, which is the simulation of human intelligence in machines.',
             'convert 10 to binary': '10 in binary is 1010.',
             'what is the speed of light?': 'The speed of light is approximately 299,792,458 meters per second.',
-            'who is the ceo of microsoft?': 'As of now, the CEO of Microsoft is Satya Nadella.',
-            'tell me a fun fact': 'Did you know? An octopus has three hearts and blue blood.',
-            'what is the triple point?': 'The triple point is a phenomenon where water can boil and freeze simultaneously.',
-            'tell me about venus': 'A day on Venus is longer than a year on Venus due to its slow rotation.',
-            'shortest war in history': 'The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.',
-            'russia vs pluto': 'Russia has a larger surface area than Pluto.',
-            'how many scents can a human nose detect?': 'The human nose can detect about one trillion different scents.',
-            'what is the first novel?': '"The Tale of Genji" by Murasaki Shikibu is considered the world\'s first novel, written in Japan around the year 1000.',
-            'origin of olympic games': 'The Olympic Games were originally a religious festival in honor of Zeus.',
-            'first 1gb hard drive': 'The first 1GB hard disk drive, introduced in 1980, weighed over 500 pounds.',
-            'does honey spoil?': 'Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3000 years old and still edible.',
-            'who is the highest-grossing movie of all time?': 'As of now, the highest-grossing movie of all time is "Avatar" directed by James Cameron.',
-            'what is the most-streamed song on Spotify?': 'The most-streamed song on Spotify is "Shape of You" by Ed Sheeran.',
-            'what is the most-watched TV show?': 'The most-watched TV show of all time is "M*A*S*H," particularly its final episode.',
-            'who is the most awarded Grammy artist?': 'The most awarded Grammy artist is Beyoncé with 28 wins.',
-            'what is the longest-running TV series?': 'The longest-running TV series is "The Simpsons," which debuted in 1989.',
-            'what is the fastest land animal?': 'The fastest land animal is the cheetah, which can reach speeds of up to 70 mph.',
-            'which bird has the longest wingspan?': 'The bird with the longest wingspan is the wandering albatross, which can reach up to 12 feet.',
-            'what is the most popular pet in the world?': 'The most popular pet in the world is the dog.',
-            'what is the smallest mammal?': 'The smallest mammal by weight is the bumblebee bat, also known as Kitti\'s hog-nosed bat.',
-            'which mammal has the largest brain?': 'The mammal with the largest brain is the sperm whale.',
-            'what is the tallest building in the world?': 'The tallest building in the world is the Burj Khalifa in Dubai, standing at 828 meters (2,717 feet).',
-            'who holds the record for the most Olympic gold medals?': 'Michael Phelps holds the record for the most Olympic gold medals, with a total of 23 golds.',
-            'what is the largest planet in the solar system?': 'The largest planet in the solar system is Jupiter.',
-            'what is the hardest natural substance on Earth?': 'The hardest natural substance on Earth is diamond.',
-            'which country has the most time zones?': 'France has the most time zones, including its overseas territories.',
-            'what is the oldest continuously inhabited city in the world?': 'The oldest continuously inhabited city in the world is Damascus, Syria.',
-            'what is the deepest part of the world\'s oceans?': 'The deepest part of the world\'s oceans is the Mariana Trench in the Pacific Ocean.',
-            'who is known as the "father of computers"?': 'Charles Babbage is known as the "father of computers."',
-            'what is the largest desert in the world?': 'The largest desert in the world is the Sahara Desert in Africa.',
-            'which continent has the most countries?': 'Africa has the most countries of any continent, with a total of 54.',
-            'what is the oldest surviving written document?': 'The oldest surviving written document is the Kish Tablet, which dates back to around 3500 BC.',
-            'what is the most expensive painting ever sold?': 'The most expensive painting ever sold is Leonardo da Vinci\'s "Salvator Mundi," which was sold for $450 million.',
-            'who is the best-selling music artist of all time?': 'The best-selling music artist of all time is The Beatles.',
-            'what is the tallest waterfall in the world?': 'The tallest waterfall in the world is Angel Falls in Venezuela.',
-            'what is the most spoken language in the world?': 'The most spoken language in the world by number of native speakers is Mandarin Chinese.',
-            'who is the richest person in the world?': 'As of now, the richest person in the world is Elon Musk.',
-            'what is the smallest country in the world?': 'The smallest country in the world by land area is Vatican City.',
-            'which animal has the longest lifespan?': 'The animal with[_{{{CITATION{{{_1{](https://github.com/NMYou/aihack/tree/18bd630b9d5047f5e99fdf9d44629380c3fd9540/index.php)
-             
+            'who is the ceo of microsoft?': 'As of now, the CEO of Microsoft is Satya Nadella.'
+        };
+        function getBotResponses() {
+            return JSON.parse(localStorage.getItem('botResponses')) || defaultBotResponses;
+        }
+        function setBotResponses(botResponses) {
+            localStorage.setItem('botResponses', JSON.stringify(botResponses));
+        }
+        function addMessage(content, className) {
+            const messageElement = document.createElement('li');
+            messageElement.textContent = content;
+            messageElement.className = className;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        function handleUserInput() {
+            const userText = userInput.value.toLowerCase();
+            addMessage(userInput.value, 'user');
+            userInput.value = '';
+            const botResponses = getBotResponses();
+            const botReply = botResponses[userText] || "Sorry, I didn't understand that. Try asking something else!";
+            setTimeout(() => addMessage(botReply, 'bot'), 500);
+        }
+        function addNewQuestion() {
+            const question = prompt('Enter the new question:');
+            const answer = prompt('Enter the answer:');
+            if (question && answer) {
+                const botResponses = getBotResponses();
+                botResponses[question.toLowerCase()] = answer;
+                setBotResponses(botResponses);
+                alert('New question added successfully!');
+            } else {
+                alert('Question and answer cannot be empty.');
+            }
+        }
+        function viewAvailableQuestions() {
+            const botResponses = getBotResponses();
+            alert('Available Questions:\n' + Object.keys(botResponses).join('\n'));
+        }
+        sendButton.addEventListener('click', handleUserInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleUserInput();
+            }
+        });
+        addQuestionButton.addEventListener('click', addNewQuestion);
+        viewQuestionsButton.addEventListener('click', viewAvailableQuestions);
+    </script>
+</body>
+</html>
+    
